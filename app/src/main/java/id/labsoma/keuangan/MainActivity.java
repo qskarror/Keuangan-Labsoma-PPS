@@ -18,6 +18,39 @@ import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
 
+    // Menyembunyikan banner "Aplikasi ini dibuat oleh pengguna Google Apps Script".
+    // Banner dipasang Google di halaman luar; aplikasi kita berada di dalam iframe.
+    // Semua elemen halaman luar selain iframe disembunyikan, lalu iframe dibuat memenuhi layar.
+    private static final String HIDE_BANNER_JS =
+            "(function(){"
+            + "if(window.__kkHide)return;window.__kkHide=1;"
+            + "function run(){"
+            + "var f=document.getElementById('userHtmlFrame')||document.querySelector('iframe');"
+            + "if(!f||!document.body)return;"
+            + "var keep=[];"
+            + "for(var n=f;n&&n!==document.documentElement;n=n.parentElement)keep.push(n);"
+            + "var all=document.body.querySelectorAll('*');"
+            + "for(var i=0;i<all.length;i++){"
+            + "var e=all[i];"
+            + "if(keep.indexOf(e)>=0)continue;"
+            + "var t=e.tagName;"
+            + "if(t==='SCRIPT'||t==='STYLE'||t==='LINK'||t==='META'||t==='NOSCRIPT')continue;"
+            + "e.style.setProperty('display','none','important');"
+            + "}"
+            + "var st=f.style;"
+            + "st.setProperty('position','fixed','important');"
+            + "st.setProperty('top','0','important');"
+            + "st.setProperty('left','0','important');"
+            + "st.setProperty('width','100%','important');"
+            + "st.setProperty('height','100%','important');"
+            + "st.setProperty('border','0','important');"
+            + "document.documentElement.style.setProperty('overflow','hidden','important');"
+            + "document.body.style.setProperty('overflow','hidden','important');"
+            + "}"
+            + "run();"
+            + "new MutationObserver(run).observe(document.documentElement,{childList:true,subtree:true});"
+            + "})();";
+
     private WebView web;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -47,6 +80,14 @@ public class MainActivity extends Activity {
         web.setHorizontalScrollBarEnabled(false);
 
         web.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (url != null && url.contains("script.google.com")) {
+                    view.evaluateJavascript(HIDE_BANNER_JS, null);
+                }
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri u = request.getUrl();
