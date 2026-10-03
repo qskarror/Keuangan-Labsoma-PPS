@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Keuangan Kantor</string>
     <!-- GANTI dengan URL aplikasi web Anda (Apps Script > Terapkan > Kelola penerapan > URL aplikasi web) -->
-    <string name="app_url" translatable="false">https://script.google.com/macros/s/GANTI_DENGAN_ID_DEPLOYMENT/exec</string>
+    <string name="app_url" translatable="false">https://script.google.com/macros/s/AKfycbw_Sm9ebu8Skn_oIWRGnNFEIpIhX7BtZImeCNazUW3LGdVOioJBhHMlSicEG1cWkp_BwQ/exec</string>
 </resources>
